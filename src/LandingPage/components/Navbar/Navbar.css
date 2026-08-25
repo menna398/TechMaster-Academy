@@ -1,0 +1,112 @@
+.custom-navbar {
+  height: 86px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0;
+}
+
+/* Logo */
+
+.logo-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: #203d75;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.brand-text {
+  line-height: 1.1;
+}
+
+.brand-name {
+  color: #203d75;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.brand-subtitle {
+  color: #8a99b3;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+/* Navbar Links */
+
+.custom-navbar .nav-link {
+  color: #607394;
+  font-size: 17px;
+  font-weight: 500;
+  padding: 8px 0 !important;
+  transition: 0.2s ease;
+}
+
+.custom-navbar .nav-link:hover,
+.custom-navbar .nav-link.active {
+  color: #203d75;
+}
+
+/* Student Hub Button */
+
+.student-btn {
+  min-width: 232px;
+  height: 45px;
+
+  padding: 0 25px;
+
+  border-radius: 25px;
+  background-color: #203d75;
+  color: white;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  text-decoration: none;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  transition: 0.2s ease;
+}
+
+.student-btn:hover {
+  background-color: #172f5c;
+  color: white;
+}
+
+.student-btn span {
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* Mobile */
+
+@media (max-width: 991px) {
+  .custom-navbar {
+    height: auto;
+    min-height: 75px;
+    padding: 12px 0;
+  }
+
+  .custom-navbar .navbar-collapse {
+    padding: 20px 0 10px;
+  }
+
+  .custom-navbar .navbar-nav {
+    margin-left: 0 !important;
+    gap: 5px !important;
+  }
+
+  .student-btn {
+    width: 100%;
+  }
+}

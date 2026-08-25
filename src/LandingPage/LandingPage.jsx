@@ -1,10 +1,11 @@
 import React from 'react'
+import Navbar from './components/Navbar/Navbar'
 
 function LandingPage() {
   return (
-    <div>
-      
-    </div>
+    <>
+      <Navbar></Navbar>
+    </>
   )
 }
 
