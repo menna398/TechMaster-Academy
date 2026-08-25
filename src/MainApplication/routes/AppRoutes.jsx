@@ -1,9 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-
 import LandingPage from "../../LandingPage/LandingPage";
-
 import MainLayout from "../layouts/MainLayout";
-
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Tasks from "../pages/Tasks/Tasks";
 import Notes from "../pages/Notes/Notes";
@@ -14,15 +11,15 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Landing Page */}
-      <Route path="/" element={<LandingPage />} />
+      <Route path="/" element={<LandingPage></LandingPage>} />
 
       {/* Main Application */}
-      <Route element={<MainLayout />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/tasks" element={<Tasks />} />
-        <Route path="/notes" element={<Notes />} />
-        <Route path="/resources" element={<Resources />} />
-        <Route path="/profile" element={<Profile />} />
+      <Route element={<MainLayout></MainLayout>}>
+        <Route path="/dashboard" element={<Dashboard></Dashboard>} />
+        <Route path="/tasks" element={<Tasks></Tasks>} />
+        <Route path="/notes" element={<Notes></Notes>} />
+        <Route path="/resources" element={<Resources></Resources>} />
+        <Route path="/profile" element={<Profile></Profile>} />
       </Route>
     </Routes>
   );
