@@ -1,0 +1,150 @@
+.footer {
+  width: 100%;
+  color: white;
+}
+
+/* =========================
+   CTA
+========================= */
+
+.footer-cta {
+  min-height: 425px;
+  background: linear-gradient(110deg, #102a55, #24447c);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 70px 20px;
+  box-sizing: border-box;
+}
+
+.footer-label {
+  color: #6ba7ff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.footer-cta h2 {
+  margin: 0 0 20px;
+  color: #ffffff;
+  font-size: 34px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.footer-cta p {
+  margin: 0 0 34px;
+  color: #b9d4ff;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* =========================
+   Button
+========================= */
+
+.footer-button {
+  border: none;
+  background: #ffffff;
+  color: #193968;
+  padding: 17px 32px;
+  border-radius: 22px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  transition: 0.2s ease;
+}
+
+.footer-button span {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.footer-button:hover {
+  transform: translateY(-2px);
+}
+
+/* =========================
+   Bottom
+========================= */
+
+.footer-bottom {
+  min-height: 100px;
+  padding: 0 14%;
+  background: #091c3d;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #4268ed;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.footer-brand span {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.footer-bottom p {
+  margin: 0;
+  color: #6680a8;
+  font-size: 13px;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 768px) {
+  .footer-cta {
+    min-height: 400px;
+    padding: 60px 20px;
+  }
+
+  .footer-cta h2 {
+    font-size: 28px;
+  }
+
+  .footer-cta p {
+    font-size: 14px;
+  }
+
+  .footer-cta p br {
+    display: none;
+  }
+
+  .footer-bottom {
+    padding: 25px 20px;
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+}
