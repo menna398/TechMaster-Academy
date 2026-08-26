@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import "./Notes.css";
 
 const NOTES_STORAGE_KEY = "techmaster_notes";
@@ -56,11 +57,11 @@ function Notes() {
     e.preventDefault();
 
     if (!title.trim() || !content.trim()) {
+      toast.error("Please fill in all fields.");
       return;
     }
 
     if (editingNote) {
-      // UPDATE
       setNotes((prevNotes) =>
         prevNotes.map((note) =>
           note.id === editingNote.id
@@ -72,8 +73,9 @@ function Notes() {
             : note,
         ),
       );
+
+      toast.success("Note updated successfully!");
     } else {
-      // CREATE
       const newNote = {
         id: crypto.randomUUID(),
         title: title.trim(),
@@ -82,19 +84,17 @@ function Notes() {
       };
 
       setNotes((prevNotes) => [newNote, ...prevNotes]);
+
+      toast.success("Note added successfully!");
     }
 
     closeModal();
   };
 
   const handleDelete = (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this note?",
-    );
-
-    if (!confirmed) return;
-
     setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+
+    toast.success("Note deleted successfully!");
   };
 
   const formatDate = (date) => {
