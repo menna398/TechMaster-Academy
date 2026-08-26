@@ -1,0 +1,126 @@
+.sidebar {
+  position: fixed;
+
+  top: 72px;
+  left: 0;
+
+  width: 250px;
+  height: calc(100vh - 72px);
+
+  background-color: #ffffff;
+
+  border-right: 1px solid #e5e7eb;
+
+  display: flex;
+  flex-direction: column;
+
+  z-index: 900;
+}
+
+
+
+.sidebar-brand {
+  height: 90px;
+
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.brand-logo {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  background-color: #294a91;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 600;
+}
+
+.sidebar-brand h3 {
+  margin: 0;
+
+  font-size: 14px;
+  color: #183b78;
+}
+
+.sidebar-brand span {
+  font-size: 11px;
+  color: #8ba0c3;
+}
+
+
+.sidebar-menu {
+  padding: 18px 10px;
+}
+
+.menu-title {
+  margin: 0 15px 10px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  color: #8ba0c3;
+}
+
+.sidebar-link {
+  height: 48px;
+
+  margin-bottom: 4px;
+
+  padding: 0 15px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  border-radius: 7px;
+
+  text-decoration: none;
+
+  color: #60789f;
+
+  font-size: 15px;
+  font-weight: 500;
+
+  transition: 0.2s;
+}
+
+.sidebar-link span:first-child {
+  width: 18px;
+
+  font-size: 19px;
+
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar-link:hover {
+  background-color: #f4f7ff;
+  color: #315de0;
+}
+
+.sidebar-link.active {
+  background-color: #f1f5ff;
+
+  border: 2px solid #4169ff;
+
+  color: #173c8d;
+
+  font-weight: 600;
+}
+
+.sidebar-link.active span:first-child {
+  color: #4169ff;
+}
+
