@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar/Navbar";
 import Sidebar from "./Sidebar/Sidebar";
+import "./MainLayout.css";
 
 function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
