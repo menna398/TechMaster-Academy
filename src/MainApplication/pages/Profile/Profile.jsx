@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from "react-toastify";
 
 export default function Profile() {
   const [profile, setProfile] = useState(() => {
@@ -51,6 +52,7 @@ export default function Profile() {
     e.preventDefault();
     setProfile(formData);
     setIsEditing(false);
+    toast.success("Profile Updated successfully!");
   };
 
   return (

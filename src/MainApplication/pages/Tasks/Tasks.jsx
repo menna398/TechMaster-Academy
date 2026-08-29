@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from "react-toastify";
 
 export default function Tasks() {
   const [tasks, setTasks] = useState(() => {
@@ -42,10 +43,13 @@ export default function Tasks() {
     setCategory('Study');
     setPriority('Medium');
     setStatus('To Do');
+
+    toast.success("Task added successfully!");
   };
 
   const handleDelete = (id) => {
     setTasks(tasks.filter(t => t.id !== id));
+    toast.success("Task deleted successfully!");
   };
 
   const handleStartEdit = (task) => {
@@ -61,6 +65,7 @@ export default function Tasks() {
       t.id === id ? { ...t, title: editTitle, category: editCategory, priority: editPriority, status: editStatus } : t
     ));
     setEditingId(null);
+    toast.success("Task Edited successfully!");
   };
 
   const filteredTasks = tasks.filter(task => 
