@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export default function Resources() {
   const [resources, setResources] = useState(() => {
@@ -21,27 +22,36 @@ export default function Resources() {
   }, [resources]);
 
   const handleAddResource = (e) => {
-    e.preventDefault();
-    if (!title.trim() || !url.trim()) return;
+  e.preventDefault();
 
-    const newRes = {
-      id: Date.now(),
-      title,
-      category,
-      url: url.startsWith('http') ? url : `https://${url}`,
-      description
-    };
+  if (!title.trim() || !url.trim()) {
+    toast.error("Please enter a title and URL");
+    return;
+  }
 
-    setResources([newRes, ...resources]);
-    setTitle('');
-    setUrl('');
-    setDescription('');
-    setCategory('Docs');
+  const newRes = {
+    id: Date.now(),
+    title,
+    category,
+    url: url.startsWith("http") ? url : `https://${url}`,
+    description,
   };
 
-  const handleDelete = (id) => {
-    setResources(resources.filter(r => r.id !== id));
-  };
+  setResources([newRes, ...resources]);
+
+  setTitle("");
+  setUrl("");
+  setDescription("");
+  setCategory("Docs");
+
+  toast.success("Resource added successfully!");
+};
+
+const handleDelete = (id) => {
+  setResources(resources.filter((r) => r.id !== id));
+
+  toast.success("Resource deleted successfully!");
+};
 
   const filteredResources = resources.filter(res => 
     res.title.toLowerCase().includes(search.toLowerCase()) || 
