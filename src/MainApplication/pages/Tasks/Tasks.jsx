@@ -4,68 +4,68 @@ export default function Tasks() {
   const [tasks, setTasks] = useState(() => {
     const saved = localStorage.getItem('app_tasks');
     return saved ? JSON.parse(saved) : [
-      { id: 1, title: 'Finish React Hooks lesson', priority: 'High', status: 'In Progress' },
-      { id: 2, title: 'Submit Portfolio project', priority: 'Medium', status: 'Pending' },
-      { id: 3, title: 'Review JavaScript ES6+', priority: 'Low', status: 'Done' }
+      { id: 1, title: 'Learn React Hooks', category: 'Study', priority: 'High', status: 'In Progress' },
+      { id: 2, title: 'Build Dashboard Layout', category: 'Project', priority: 'Medium', status: 'Done' }
     ];
   });
+
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('Study');
+  const [priority, setPriority] = useState('Medium');
+  const [status, setStatus] = useState('To Do');
+  const [search, setSearch] = useState('');
+
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editCategory, setEditCategory] = useState('Study');
+  const [editPriority, setEditPriority] = useState('Medium');
+  const [editStatus, setEditStatus] = useState('To Do');
 
   useEffect(() => {
     localStorage.setItem('app_tasks', JSON.stringify(tasks));
   }, [tasks]);
 
-  const [taskTitle, setTaskTitle] = useState('');
-  const [priority, setPriority] = useState('Medium');
-  const [editingId, setEditingId] = useState(null);
-  const [search, setSearch] = useState('');
-  const [isFormOpen, setIsFormOpen] = useState(false);
-
-  // CRUD Operations
-  const handleSubmit = (e) => {
+  const handleAddTask = (e) => {
     e.preventDefault();
-    if (!taskTitle.trim()) return;
+    if (!title.trim()) return;
 
-    if (editingId) {
-      setTasks(tasks.map(t => t.id === editingId ? { ...t, title: taskTitle, priority } : t));
-      setEditingId(null);
-    } else {
-      const newTask = {
-        id: Date.now(),
-        title: taskTitle,
-        priority: priority,
-        status: 'Pending'
-      };
-      setTasks([newTask, ...tasks]);
-    }
-    setTaskTitle('');
+    const newTask = {
+      id: Date.now(),
+      title,
+      category,
+      priority,
+      status
+    };
+
+    setTasks([newTask, ...tasks]);
+    setTitle('');
+    setCategory('Study');
     setPriority('Medium');
-    setIsFormOpen(false);
-  };
-
-  const handleEdit = (task) => {
-    setEditingId(task.id);
-    setTaskTitle(task.title);
-    setPriority(task.priority);
-    setIsFormOpen(true);
-  };
-
-  const toggleStatus = (id, newStatus) => {
-    setTasks(tasks.map(t => t.id === id ? { ...t, status: newStatus } : t));
+    setStatus('To Do');
   };
 
   const handleDelete = (id) => {
     setTasks(tasks.filter(t => t.id !== id));
   };
 
-  // Stats
-  const total = tasks.length;
-  const pending = tasks.filter(t => t.status === 'Pending').length;
-  const inProgress = tasks.filter(t => t.status === 'In Progress').length;
-  const done = tasks.filter(t => t.status === 'Done').length;
+  const handleStartEdit = (task) => {
+    setEditingId(task.id);
+    setEditTitle(task.title);
+    setEditCategory(task.category);
+    setEditPriority(task.priority);
+    setEditStatus(task.status);
+  };
 
-  // Search Filtering Only (No status buttons)
-  const filteredTasks = tasks.filter(task =>
-    task.title.toLowerCase().includes(search.toLowerCase())
+  const handleSaveEdit = (id) => {
+    setTasks(tasks.map(t => 
+      t.id === id ? { ...t, title: editTitle, category: editCategory, priority: editPriority, status: editStatus } : t
+    ));
+    setEditingId(null);
+  };
+
+  const filteredTasks = tasks.filter(task => 
+    task.title.toLowerCase().includes(search.toLowerCase()) ||
+    task.category.toLowerCase().includes(search.toLowerCase())
   );
 
   const getPriorityColor = (p) => {
@@ -75,183 +75,266 @@ export default function Tasks() {
   };
 
   return (
-    <div style={{ padding: '30px', maxWidth: '1000px', margin: '0 auto', fontFamily: 'sans-serif' }}>
+    <div style={{ 
+      padding: '20px 15px', 
+      maxWidth: '1000px', 
+      margin: '0 auto', 
+      fontFamily: 'sans-serif',
+      boxSizing: 'border-box',
+      width: '100%'
+    }}>
       
-      {/* Header Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <div>
-          <h1 style={{ margin: 0, color: '#0f172a' }}>My Tasks</h1>
-          <p style={{ margin: '5px 0 0 0', color: '#64748b' }}>
-            {pending + inProgress} remaining · {done} completed
-          </p>
-        </div>
-        <button 
-          onClick={() => {
-            setEditingId(null);
-            setTaskTitle('');
-            setIsFormOpen(!isFormOpen);
-          }}
-          style={{
-            backgroundColor: '#1e293b',
-            color: '#fff',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontWeight: '600'
-          }}
-        >
-          {isFormOpen ? 'Close Form' : '+ Add Task'}
-        </button>
+      {/* Header */}
+      <div style={{ marginBottom: '20px' }}>
+        <h1 style={{ margin: '0 0 6px 0', fontSize: '22px', color: '#0f172a' }}>Task Manager</h1>
+        <p style={{ margin: 0, color: '#64748b', fontSize: '13px' }}>Organize your daily studies and project goals.</p>
       </div>
 
-      {/* Stats Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px', marginBottom: '25px' }}>
-        {[
-          { label: 'Total', count: total },
-          { label: 'Pending', count: pending },
-          { label: 'In Progress', count: inProgress },
-          { label: 'Done', count: done }
-        ].map((stat, idx) => (
-          <div key={idx} style={{
-            backgroundColor: '#fff',
-            border: '1px solid #e2e8f0',
-            borderRadius: '12px',
-            padding: '15px',
-            textAlign: 'center',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-          }}>
-            <h2 style={{ margin: 0, color: '#0f172a', fontSize: '24px' }}>{stat.count}</h2>
-            <span style={{ color: '#64748b', fontSize: '13px' }}>{stat.label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Form Area */}
-      {isFormOpen && (
-        <form onSubmit={handleSubmit} style={{
-          backgroundColor: '#f8fafc',
-          border: '1px solid #cbd5e1',
-          padding: '20px',
-          borderRadius: '12px',
-          marginBottom: '25px',
-          display: 'flex',
-          gap: '10px'
+      {/* Add Task Form */}
+      <form onSubmit={handleAddTask} style={{
+        backgroundColor: '#fff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '16px',
+        padding: '18px',
+        marginBottom: '25px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+      }}>
+        <h2 style={{ marginTop: 0, fontSize: '15px', color: '#0f172a', marginBottom: '12px' }}>Add New Task</h2>
+        
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
+          gap: '12px',
+          marginBottom: '15px' 
         }}>
-          <input 
-            type="text" 
-            placeholder="Enter task title..." 
-            value={taskTitle} 
-            onChange={(e) => setTaskTitle(e.target.value)}
-            style={{ flex: 1, padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
-          />
-          <select 
-            value={priority} 
-            onChange={(e) => setPriority(e.target.value)}
-            style={{ padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
-          >
-            <option value="Low">Low Priority</option>
-            <option value="Medium">Medium Priority</option>
-            <option value="High">High Priority</option>
-          </select>
-          <button type="submit" style={{
-            backgroundColor: '#2563eb',
-            color: '#fff',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '6px',
-            cursor: 'pointer'
-          }}>
-            {editingId ? 'Update' : 'Save'}
-          </button>
-        </form>
-      )}
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Task Title *</label>
+            <input 
+              type="text" 
+              placeholder="e.g. Finish React Project..." 
+              value={title} 
+              onChange={e => setTitle(e.target.value)}
+              required
+              style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+            />
+          </div>
 
-      {/* Search Input Only */}
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Category</label>
+            <select 
+              value={category} 
+              onChange={e => setCategory(e.target.value)}
+              style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box', backgroundColor: '#fff' }}
+            >
+              <option value="Study">Study</option>
+              <option value="Project">Project</option>
+              <option value="Personal">Personal</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Priority</label>
+            <select 
+              value={priority} 
+              onChange={e => setPriority(e.target.value)}
+              style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box', backgroundColor: '#fff' }}
+            >
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Status</label>
+            <select 
+              value={status} 
+              onChange={e => setStatus(e.target.value)}
+              style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box', backgroundColor: '#fff' }}
+            >
+              <option value="To Do">To Do</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Done">Done</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" style={{
+          backgroundColor: '#2563eb',
+          color: '#fff',
+          border: 'none',
+          padding: '9px 18px',
+          borderRadius: '6px',
+          fontWeight: '600',
+          fontSize: '13px',
+          cursor: 'pointer',
+          width: '100%',
+          maxWidth: '150px'
+        }}>
+          + Add Task
+        </button>
+      </form>
+
+      {/* Search Bar Only (No filter buttons) */}
       <div style={{ marginBottom: '20px' }}>
         <input 
           type="text" 
-          placeholder="Search tasks..." 
+          placeholder="Search tasks by title or category..." 
           value={search} 
-          onChange={(e) => setSearch(e.target.value)} 
-          style={{ width: '100%', padding: '12px 20px', borderRadius: '25px', border: '1px solid #e2e8f0', boxSizing: 'border-box' }}
+          onChange={e => setSearch(e.target.value)}
+          style={{ 
+            width: '100%', 
+            padding: '10px 14px', 
+            borderRadius: '8px', 
+            border: '1px solid #cbd5e1', 
+            fontSize: '13px',
+            boxSizing: 'border-box'
+          }}
         />
       </div>
 
-      {/* Task List */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        {filteredTasks.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#94a3b8', margin: '40px 0' }}>No tasks found.</p>
-        ) : (
-          filteredTasks.map(task => (
-            <div key={task.id} style={{
-              backgroundColor: '#fff',
-              border: '1px solid #e2e8f0',
-              borderRadius: '10px',
-              padding: '15px 20px',
-              display: 'flex',
-              justify: 'space-between',
-              alignItems: 'center',
-              boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                <span style={{
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: '50%',
-                  backgroundColor: getPriorityColor(task.priority)
-                }}></span>
-                <span style={{
-                  fontWeight: '500',
-                  color: task.status === 'Done' ? '#94a3b8' : '#0f172a',
-                  textDecoration: task.status === 'Done' ? 'line-through' : 'none'
-                }}>
-                  {task.title}
-                </span>
-              </div>
+      {/* Tasks List Grid */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+        gap: '15px' 
+      }}>
+        {filteredTasks.map(task => (
+          <div key={task.id} style={{
+            backgroundColor: '#fff',
+            border: '1px solid #e2e8f0',
+            borderRadius: '12px',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            justify: 'space-between',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+          }}>
+            {editingId === task.id ? (
+              /* Edit Mode */
+              <div>
+                <input 
+                  type="text" 
+                  value={editTitle} 
+                  onChange={e => setEditTitle(e.target.value)}
+                  style={{ width: '100%', padding: '6px 10px', borderRadius: '4px', border: '1px solid #cbd5e1', marginBottom: '8px', boxSizing: 'border-box', fontSize: '13px' }}
+                />
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{
-                  fontSize: '11px',
-                  fontWeight: 'bold',
-                  color: getPriorityColor(task.priority),
-                  padding: '3px 8px',
-                  borderRadius: '4px',
-                  backgroundColor: '#f8fafc'
-                }}>
-                  {task.priority}
-                </span>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '8px' }}>
+                  <select 
+                    value={editCategory} 
+                    onChange={e => setEditCategory(e.target.value)}
+                    style={{ padding: '6px', fontSize: '11px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                  >
+                    <option value="Study">Study</option>
+                    <option value="Project">Project</option>
+                    <option value="Personal">Personal</option>
+                  </select>
+
+                  <select 
+                    value={editPriority} 
+                    onChange={e => setEditPriority(e.target.value)}
+                    style={{ padding: '6px', fontSize: '11px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                  >
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                  </select>
+                </div>
 
                 <select 
-                  value={task.status} 
-                  onChange={(e) => toggleStatus(task.id, e.target.value)}
-                  style={{
-                    padding: '5px 10px',
-                    borderRadius: '6px',
-                    border: '1px solid #cbd5e1',
-                    fontSize: '12px'
-                  }}
+                  value={editStatus} 
+                  onChange={e => setEditStatus(e.target.value)}
+                  style={{ width: '100%', padding: '6px', fontSize: '11px', borderRadius: '4px', border: '1px solid #cbd5e1', marginBottom: '10px' }}
                 >
-                  <option value="Pending">Pending</option>
+                  <option value="To Do">To Do</option>
                   <option value="In Progress">In Progress</option>
                   <option value="Done">Done</option>
                 </select>
 
-                <button 
-                  onClick={() => handleEdit(task)}
-                  style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '13px' }}
-                >
-                  Edit
-                </button>
-                <button 
-                  onClick={() => handleDelete(task.id)}
-                  style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '13px' }}
-                >
-                  Delete
-                </button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button 
+                    onClick={() => handleSaveEdit(task.id)}
+                    style={{ backgroundColor: '#10b981', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}
+                  >
+                    Save
+                  </button>
+                  <button 
+                    onClick={() => setEditingId(null)}
+                    style={{ backgroundColor: '#f1f5f9', color: '#475569', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
+            ) : (
+              /* Normal View Mode */
+              <>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', gap: '6px' }}>
+                    {/* Priority Badge */}
+                    <span style={{
+                      fontSize: '11px',
+                      fontWeight: 'bold',
+                      color: getPriorityColor(task.priority),
+                      backgroundColor: '#f8fafc',
+                      border: `1px solid ${getPriorityColor(task.priority)}`,
+                      padding: '2px 8px',
+                      borderRadius: '12px'
+                    }}>
+                      {task.priority}
+                    </span>
+
+                    {/* Dynamic Status Badge (بدل كلمه Pending) */}
+                    <span style={{
+                      fontSize: '11px',
+                      color: task.status === 'Done' ? '#10b981' : task.status === 'In Progress' ? '#0284c7' : '#64748b',
+                      backgroundColor: task.status === 'Done' ? '#d1fae5' : task.status === 'In Progress' ? '#e0f2fe' : '#f1f5f9',
+                      padding: '3px 10px',
+                      borderRadius: '12px',
+                      fontWeight: '600'
+                    }}>
+                      {task.status || 'To Do'}
+                    </span>
+                  </div>
+
+                  <h3 style={{ 
+                    margin: '0 0 6px 0', 
+                    fontSize: '15px', 
+                    color: '#0f172a',
+                    textDecoration: task.status === 'Done' ? 'line-through' : 'none'
+                  }}>
+                    {task.title}
+                  </h3>
+
+                  <div style={{ fontSize: '12px', color: '#64748b' }}>
+                    Category: <strong style={{ color: '#334155' }}>{task.category}</strong>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '15px', borderTop: '1px solid #f1f5f9', paddingTop: '10px' }}>
+                  <button 
+                    onClick={() => handleStartEdit(task)}
+                    style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '12px', padding: 0 }}
+                  >
+                    Edit
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(task.id)}
+                    style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '12px', padding: 0 }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+
+        {filteredTasks.length === 0 && (
+          <p style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#94a3b8', fontSize: '13px', padding: '30px 0' }}>
+            No tasks found.
+          </p>
         )}
       </div>
 

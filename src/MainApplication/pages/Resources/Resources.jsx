@@ -4,218 +4,245 @@ export default function Resources() {
   const [resources, setResources] = useState(() => {
     const saved = localStorage.getItem('app_resources');
     return saved ? JSON.parse(saved) : [
-      { id: 1, title: 'React Official Documentation', url: 'https://react.dev', category: 'React', description: 'The official guide to learn React framework.' },
-      { id: 2, title: 'JavaScript Info', url: 'https://javascript.info', category: 'JavaScript', description: 'Modern JavaScript tutorial from basics to advanced.' },
-      { id: 3, title: 'Tailwind CSS Docs', url: 'https://tailwindcss.com', category: 'CSS', description: 'Utility-first CSS framework for rapid UI development.' }
+      { id: 1, title: 'React Documentation', category: 'Docs', url: 'https://react.dev', description: 'Official React docs with interactive tutorials.' },
+      { id: 2, title: 'JS Info', category: 'Guide', url: 'https://javascript.info', description: 'Modern JavaScript tutorial from basics to advanced.' },
+      { id: 3, title: 'Tailwind CSS Docs', category: 'Docs', url: 'https://tailwindcss.com', description: 'Utility-first CSS framework documentation.' }
     ];
   });
+
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('Docs');
+  const [url, setUrl] = useState('');
+  const [description, setDescription] = useState('');
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     localStorage.setItem('app_resources', JSON.stringify(resources));
   }, [resources]);
 
-  const [title, setTitle] = useState('');
-  const [url, setUrl] = useState('');
-  const [category, setCategory] = useState('React');
-  const [description, setDescription] = useState('');
-  const [search, setSearch] = useState('');
-  const [isFormOpen, setIsFormOpen] = useState(false);
-
-  const handleSubmit = (e) => {
+  const handleAddResource = (e) => {
     e.preventDefault();
     if (!title.trim() || !url.trim()) return;
 
-    const newResource = {
+    const newRes = {
       id: Date.now(),
       title,
-      url: url.startsWith('http') ? url : `https://${url}`,
       category,
+      url: url.startsWith('http') ? url : `https://${url}`,
       description
     };
 
-    setResources([newResource, ...resources]);
+    setResources([newRes, ...resources]);
     setTitle('');
     setUrl('');
     setDescription('');
-    setIsFormOpen(false);
+    setCategory('Docs');
   };
 
   const handleDelete = (id) => {
     setResources(resources.filter(r => r.id !== id));
   };
 
-  const filteredResources = resources.filter(res =>
-    res.title.toLowerCase().includes(search.toLowerCase()) ||
+  const filteredResources = resources.filter(res => 
+    res.title.toLowerCase().includes(search.toLowerCase()) || 
+    res.description.toLowerCase().includes(search.toLowerCase()) ||
     res.category.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <div style={{ padding: '30px', maxWidth: '1000px', margin: '0 auto', fontFamily: 'sans-serif' }}>
+    <div style={{ 
+      padding: '20px 15px', 
+      maxWidth: '1000px', 
+      margin: '0 auto', 
+      fontFamily: 'sans-serif',
+      boxSizing: 'border-box',
+      width: '100%'
+    }}>
       
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <div>
-          <h1 style={{ margin: 0, color: '#0f172a' }}>Learning Resources</h1>
-          <p style={{ margin: '5px 0 0 0', color: '#64748b' }}>
-            Save and manage your favorite study links and tools.
-          </p>
-        </div>
-        <button 
-          onClick={() => setIsFormOpen(!isFormOpen)}
-          style={{
-            backgroundColor: '#1e293b',
-            color: '#fff',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontWeight: '600'
-          }}
-        >
-          {isFormOpen ? 'Close Form' : '+ Add Resource'}
-        </button>
+      <div style={{ marginBottom: '20px' }}>
+        <h1 style={{ margin: '0 0 6px 0', fontSize: '22px', color: '#0f172a' }}>Learning Resources</h1>
+        <p style={{ margin: 0, color: '#64748b', fontSize: '13px' }}>Bookmark and organize your study links & docs.</p>
       </div>
 
       {/* Add Resource Form */}
-      {isFormOpen && (
-        <form onSubmit={handleSubmit} style={{
-          backgroundColor: '#f8fafc',
-          border: '1px solid #cbd5e1',
-          padding: '20px',
-          borderRadius: '12px',
-          marginBottom: '25px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px'
+      <form onSubmit={handleAddResource} style={{
+        backgroundColor: '#fff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '16px',
+        padding: '18px',
+        marginBottom: '25px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+      }}>
+        <h2 style={{ marginTop: 0, fontSize: '15px', color: '#0f172a', marginBottom: '12px' }}>Add New Resource</h2>
+        
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
+          gap: '12px',
+          marginBottom: '12px' 
         }}>
-          <h2 style={{ margin: 0, fontSize: '16px', color: '#0f172a' }}>Add New Resource</h2>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Title *</label>
             <input 
               type="text" 
-              placeholder="Resource title (e.g., React Docs)..." 
+              placeholder="e.g. React Docs" 
               value={title} 
-              onChange={(e) => setTitle(e.target.value)}
-              style={{ padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
-            />
-            <input 
-              type="text" 
-              placeholder="URL (e.g., https://react.dev)..." 
-              value={url} 
-              onChange={(e) => setUrl(e.target.value)}
-              style={{ padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+              onChange={e => setTitle(e.target.value)}
+              required
+              style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '10px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>URL *</label>
+            <input 
+              type="text" 
+              placeholder="https://..." 
+              value={url} 
+              onChange={e => setUrl(e.target.value)}
+              required
+              style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Category</label>
             <select 
               value={category} 
-              onChange={(e) => setCategory(e.target.value)}
-              style={{ padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+              onChange={e => setCategory(e.target.value)}
+              style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box', backgroundColor: '#fff' }}
             >
-              <option value="React">React</option>
-              <option value="JavaScript">JavaScript</option>
-              <option value="CSS">CSS</option>
-              <option value="Design">Design</option>
-              <option value="General">General</option>
+              <option value="Docs">Docs</option>
+              <option value="Guide">Guide</option>
+              <option value="Video">Video</option>
+              <option value="Tool">Tool</option>
+              <option value="Other">Other</option>
             </select>
-            <input 
-              type="text" 
-              placeholder="Short description..." 
-              value={description} 
-              onChange={(e) => setDescription(e.target.value)}
-              style={{ padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
-            />
           </div>
+        </div>
 
-          <button type="submit" style={{
-            backgroundColor: '#2563eb',
-            color: '#fff',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            fontWeight: '600',
-            alignSelf: 'flex-start'
-          }}>
-            Save Resource
-          </button>
-        </form>
-      )}
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Description</label>
+          <input 
+            type="text" 
+            placeholder="Short note about this resource..." 
+            value={description} 
+            onChange={e => setDescription(e.target.value)}
+            style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+          />
+        </div>
 
-      {/* Search Bar */}
+        <button type="submit" style={{
+          backgroundColor: '#2563eb',
+          color: '#fff',
+          border: 'none',
+          padding: '9px 18px',
+          borderRadius: '6px',
+          fontWeight: '600',
+          fontSize: '13px',
+          cursor: 'pointer',
+          width: '100%',
+          maxWidth: '160px'
+        }}>
+          + Save Resource
+        </button>
+      </form>
+
+      {/* Search Bar Only (No category buttons) */}
       <div style={{ marginBottom: '20px' }}>
         <input 
           type="text" 
-          placeholder="Search resources by title or category..." 
+          placeholder="Search resources by title, description or category..." 
           value={search} 
-          onChange={(e) => setSearch(e.target.value)} 
-          style={{ width: '100%', padding: '12px 20px', borderRadius: '25px', border: '1px solid #e2e8f0', boxSizing: 'border-box' }}
+          onChange={e => setSearch(e.target.value)}
+          style={{ 
+            width: '100%', 
+            padding: '10px 14px', 
+            borderRadius: '8px', 
+            border: '1px solid #cbd5e1', 
+            fontSize: '13px',
+            boxSizing: 'border-box'
+          }}
         />
       </div>
 
-      {/* Resources Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '15px' }}>
-        {filteredResources.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#94a3b8', gridColumn: '1 / -1', margin: '40px 0' }}>No resources found.</p>
-        ) : (
-          filteredResources.map(res => (
-            <div key={res.id} style={{
-              backgroundColor: '#fff',
-              border: '1px solid #e2e8f0',
-              borderRadius: '12px',
-              padding: '20px',
-              display: 'flex',
-              flexDirection: 'column',
-              justify: 'space-between',
-              boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
-            }}>
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{
-                    fontSize: '11px',
-                    fontWeight: 'bold',
-                    color: '#2563eb',
-                    backgroundColor: '#eff6ff',
-                    padding: '3px 8px',
-                    borderRadius: '4px'
-                  }}>
-                    {res.category}
-                  </span>
-                  <button 
-                    onClick={() => handleDelete(res.id)}
-                    style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '12px' }}
-                  >
-                    Delete
-                  </button>
-                </div>
+      {/* Resources Cards Grid */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', 
+        gap: '15px' 
+      }}>
+        {filteredResources.map(res => (
+          <div key={res.id} style={{
+            backgroundColor: '#fff',
+            border: '1px solid #e2e8f0',
+            borderRadius: '12px',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            justify: 'space-between',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+          }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', gap: '8px' }}>
+                <span style={{
+                  fontSize: '10px',
+                  fontWeight: 'bold',
+                  backgroundColor: '#f1f5f9',
+                  color: '#475569',
+                  padding: '2px 8px',
+                  borderRadius: '10px',
+                  textTransform: 'uppercase'
+                }}>
+                  {res.category}
+                </span>
 
-                <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#0f172a' }}>{res.title}</h3>
-                <p style={{ margin: '0 0 15px 0', fontSize: '13px', color: '#64748b', lineHeight: '1.4' }}>
-                  {res.description || 'No description provided.'}
-                </p>
+                <button 
+                  onClick={() => handleDelete(res.id)}
+                  style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '12px', padding: 0 }}
+                  title="Delete"
+                >
+                  ✕
+                </button>
               </div>
 
-              <a 
-                href={res.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{
-                  display: 'inline-block',
-                  textAlign: 'center',
-                  backgroundColor: '#f1f5f9',
-                  color: '#1e293b',
-                  padding: '8px',
-                  borderRadius: '6px',
-                  textDecoration: 'none',
-                  fontSize: '13px',
-                  fontWeight: '500'
-                }}
-              >
-                Visit Resource ↗
-              </a>
+              <h3 style={{ margin: '0 0 6px 0', fontSize: '15px', color: '#0f172a', wordBreak: 'break-word' }}>
+                {res.title}
+              </h3>
+
+              <p style={{ margin: '0 0 12px 0', fontSize: '12px', color: '#64748b', lineHeight: '1.4' }}>
+                {res.description || 'No description provided.'}
+              </p>
             </div>
-          ))
+
+            <a 
+              href={res.url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-block',
+                textAlign: 'center',
+                backgroundColor: '#f8fafc',
+                color: '#2563eb',
+                border: '1px solid #e2e8f0',
+                padding: '7px 10px',
+                borderRadius: '6px',
+                fontSize: '12px',
+                fontWeight: '600',
+                textDecoration: 'none',
+                wordBreak: 'break-all'
+              }}
+            >
+              Visit Link ↗
+            </a>
+          </div>
+        ))}
+
+        {filteredResources.length === 0 && (
+          <p style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#94a3b8', fontSize: '13px', padding: '30px 0' }}>
+            No resources found.
+          </p>
         )}
       </div>
 
